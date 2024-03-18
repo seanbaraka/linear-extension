@@ -7,23 +7,24 @@ const supabase = createClient(
 );
 
 export const useAuth = () => {
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<Session>();
+
   useEffect(() => {
     supabase.auth
       .getSession()
       .then(({ data: { session } }) => {
-        setSession(session);
+        if (session) setSession(session);
       })
       .catch((er: any) => console.log("An error occured", er.message));
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+      if (session) setSession(session);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [session]);
 
   return { session, supabase };
 };

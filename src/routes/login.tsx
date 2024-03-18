@@ -1,10 +1,10 @@
 import { Auth } from "@supabase/auth-ui-react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useAuth } from "../hooks/userAuth";
+import { Navigate } from "@tanstack/react-router";
 
 function Login() {
   const { supabase, session } = useAuth();
-  const navigate = useNavigate();
 
   if (!session) {
     return (
@@ -38,8 +38,7 @@ function Login() {
     );
   } else {
     // Assuming we have an active session, proceed to the dashboard
-    navigate({ to: "/" });
-    return;
+    return <Navigate to="/" />;
   }
 }
 
