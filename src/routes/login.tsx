@@ -1,10 +1,11 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useAuth } from "../hooks/userAuth";
 import { Navigate } from "@tanstack/react-router";
+import { useAuthContext } from "../hooks/userAuth";
+import { supabase } from "../utils";
 
 function Login() {
-  const { supabase, session } = useAuth();
+  const { session } = useAuthContext();
 
   if (!session) {
     return (
