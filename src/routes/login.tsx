@@ -10,10 +10,17 @@ function Login() {
   if (!session) {
     return (
       <section className="m-auto flex min-h-screen w-full max-w-screen-md items-center justify-center px-8 py-4">
-        <div className="">
-          <h1 className="my-2 text-center text-3xl font-light">
-            Out goes Linear, in with TLinear
+        <div className="flex flex-col">
+          <h1 className="my-8 text-center text-2xl font-500">
+          Hey there, How are you ?
           </h1>
+          <div className="pl-8 pr-7">
+          <p className="text-left text-sm font-400">
+      Building software is not easy, but creating, managing and tracking the items on the roadmap should be at least easier.
+    </p>
+    <p className="mt-10 text-left text-sm font-400 mb-4">
+      Alright, let’s get you started.
+    </p>
           <Auth
             providers={["github", "google"]}
             onlyThirdPartyProviders
@@ -34,6 +41,7 @@ function Login() {
             }}
             supabaseClient={supabase}
           />
+          </div>
         </div>
       </section>
     );
