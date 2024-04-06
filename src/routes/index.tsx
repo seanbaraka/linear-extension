@@ -1,17 +1,18 @@
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useAuthContext } from "../hooks/userAuth";
-import { supabase } from "../utils";
+import { FaSortDown, FaSortUp } from "react-icons/fa";
 import { useState } from "react";
 
 function Index() {
-  const [clicked, setClicked] = useState(false);
-  const handleClick = () => {
-    setClicked(true);
-  };
+  const [inPreview, setInPreview] = useState(false);
+  const [inProgress, setInProgress] = useState(false);
+  const [toDo, setToDo] = useState(false);
+  const [backLog, setBackLog] = useState(false);
+  const [OpenProfile, setOpenProfile] = useState(false);
+
   // First check if we have an active session
   const { session } = useAuthContext();
 
-  const navigate = useNavigate();
   // If we don't have a session recorded, prompt the user to login
   if (!session) {
     return (
@@ -28,23 +29,57 @@ function Index() {
         <div className="flex flex-row items-start my-4 mx-8">
           {/* <h1>You are logged in {session.user.email}</h1> */}
           <div className="bg-blue-400 inline-block p-1 text-sm rounded">SW</div>
-          <p className="inline-block ml-2">
-            <span>Sweep</span>
-            <span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 ml-1 inline"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 12a.75.75 0 01-.53-.22l-4.25-4.25a.75.75 0 111.06-1.06L10 10.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-.53.22z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </span>
-          </p>
+          <h2
+            className="inline-block ml-2"
+            onClick={() => setOpenProfile((prev) => !prev)}
+          >
+            Sweep
+            {OpenProfile ? (
+              <FaSortUp className="inline ml-1" />
+            ) : (
+              <FaSortDown className="inline ml-1 mb-2" />
+            )}
+            {/* dropdown */}
+            <div
+              className={`rounded-lg absolute ${OpenProfile ? "" : "hidden"} bg-zinc-800`}
+            >
+              <div className="mr-24">
+                <div className="m-2">
+                  <label className="text-sm text-gray-400">
+                    Select a workspace
+                  </label>
+                </div>
+                <div className="m-2">
+                  <ul>
+                    <li>
+                      <a href="/yooh/1">
+                        <div className="bg-blue-400 inline-block p-1 text-sm rounded mb-4">
+                          SW
+                        </div>
+                        <h2 className="inline-block ml-2">Sweep</h2>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/yooh/2">
+                        <div className="bg-orange-400 inline-block px-3 py-1 text-sm rounded mb-4">
+                          T
+                        </div>
+                        <h2 className="inline-block ml-2">Tashie</h2>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/yooh/3">
+                        <div className="bg-purple-500 inline-block px-2 py-1 text-sm rounded mb-4">
+                          LA
+                        </div>
+                        <h2 className="inline-block ml-2">Legends Assemble</h2>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </h2>
 
           <div className="inline-block ml-auto">
             <div className="w-5 h-5 rounded-full border-2 mt-1 border-gray-400"></div>
@@ -55,87 +90,116 @@ function Index() {
           <h2 className="text-gray-400 text-4xl">
             Mon. 18 <span className="text-lg"> 01:32 PM</span>
           </h2>
-          <p className="my-4 mx-4 text-2xl text-center">
+          <p className="my-4 mx-4 text-2xl text-center mt-6 mb-8">
             Good Afternoon Ethan, here is what’s planned
           </p>
           <div className="flex justify-center flex-col items-center">
-            <button type="submit" className="bg-zinc-800 p-1 rounded-lg">
+            <button type="submit" className="bg-zinc-800 p-2 rounded-lg m-2">
               My issues
-              <span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 ml-1 inline"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 12a.75.75 0 01-.53-.22l-4.25-4.25a.75.75 0 111.06-1.06L10 10.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-.53.22z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </span>
+              <FaSortDown className="inline ml-1 mb-2" />
             </button>
             <h1 className="mt-4 text-6xl">10</h1>
-            <h2 className="text-xs mt-4 text-gray-300">
-              3 Urgent 3 High 4 Low{" "}
+            <h2 className="text-sm mt-4 text-gray-300">
+              3 Urgent 3 High 4 Low
             </h2>
           </div>
         </div>
         <div className="flex items-center my-8 mx-8">
-          <div className="w-4 h-4 rounded-full border-2 border-green-600 overflow-hidden">
-            <div className="h-full bg-green-600 w-3/4"></div>
-          </div>
           <button
-            type="button"
-            className={`text-xs ${clicked ? "bg-zinc-800 p-1 rounded" : ""}`}
-            onClick={handleClick}
+            className={`flex items-center ${
+              inPreview ? "bg-zinc-800" : ""
+            } text-sm rounded-lg px-1 py-1`}
+            onClick={() => {
+              setInPreview(true);
+              setInProgress(false);
+              setToDo(false);
+              setBackLog(false);
+            }}
           >
+            <div className="w-4 h-4 rounded-full border-2 border-green-600 overflow-hidden mr-1">
+              <div className="h-full bg-green-600 w-3/4"></div>
+            </div>
             In Preview
           </button>
-          <div className="flex items-center ml-4">
-            <div className="w-4 h-4 rounded-full border-2 border-yellow-400 overflow-hidden">
+          <button
+            className={`flex items-center ${
+              inProgress ? "bg-zinc-800" : ""
+            } text-sm rounded-lg ml-1 px-1 py-1`}
+            onClick={() => {
+              setInPreview(false);
+              setInProgress(true);
+              setToDo(false);
+              setBackLog(false);
+            }}
+          >
+            <div className="w-4 h-4 rounded-full border-2 border-yellow-400 overflow-hidden mr-1">
               <div className="h-full bg-yellow-400 w-1/2"></div>
             </div>
-            <button
-              type="button"
-              className={`text-xs ${clicked ? "bg-zinc-800 p-1 rounded" : ""}`}
-              onClick={handleClick}
-            >
-              In Progress
-            </button>
-            <div className="flex items-center  ml-4">
-              <div className="w-4 h-4 rounded-full border-2 border-gray-400 overflow-hidden"></div>
-              <button
-                type="button"
-                className={`text-xs ${clicked ? "bg-zinc-800 p-1 rounded" : ""}`}
-                onClick={handleClick}
-              >
-                To Do
-              </button>
-              <div className="flex items-center  ml-4">
-                <div className="w-4 h-4 rounded-full border-2 border-gray-400 overflow-hidden"></div>
-                <button
-                  type="button"
-                  className={`text-xs ${clicked ? "bg-zinc-800 p-1 rounded" : ""}`}
-                  onClick={handleClick}
-                >
-                  Back Log
-                </button>
-              </div>
-            </div>
+            In Progress
+          </button>
+          <button
+            className={`flex items-center ${
+              toDo ? "bg-zinc-800" : ""
+            } text-sm rounded-lg ml-1 px-1 py-1`}
+            onClick={() => {
+              setInPreview(false);
+              setInProgress(false);
+              setToDo(true);
+              setBackLog(false);
+            }}
+          >
+            <div className="w-4 h-4 rounded-full border-2 border-gray-400 overflow-hidden mr-1"></div>
+            To Do
+          </button>
+          <button
+            className={`flex items-center ${
+              backLog ? "bg-zinc-800" : ""
+            } text-sm rounded-lg ml-1 px-1 py-1`}
+            onClick={() => {
+              setInPreview(false);
+              setInProgress(false);
+              setToDo(false);
+              setBackLog(true);
+            }}
+          >
+            <div className="w-4 h-4 rounded-full border-2 border-gray-400 border-dotted overflow-hidden mr-1"></div>
+            Backlog
+          </button>
+        </div>
+        <div>
+          <div className="flex items-center mx-8 my-4">
+            <input
+              type="checkbox"
+              className="form-checkbox h-4 w-4 border-2 border-gray-400 rounded ml-1 mr-1"
+            />
+            <span className="m-4">---</span>
+            <h2 className="text-sm">End To End Twitch Support</h2>
+          </div>
+          <div className="flex items-center mx-8 my-4">
+            <input
+              type="checkbox"
+              className="form-checkbox h-4 w-4 border-2 border-gray-400 rounded ml-1 mr-1"
+            />
+            <span className="m-4">---</span>
+            <h2 className="text-sm">Language Switcher</h2>
+          </div>
+          <div className="flex items-center mx-8 my-4">
+            <input
+              type="checkbox"
+              className="form-checkbox h-4 w-4 border-2 border-gray-400 rounded ml-1 mr-1"
+            />
+            <span className="m-4">---</span>
+            <h2 className="text-sm">Revamp the Home page to include the ...</h2>
+          </div>
+          <div className="flex items-center mx-8 my-4">
+            <input
+              type="checkbox"
+              className="form-checkbox h-4 w-4 border-2 border-gray-400 rounded ml-1 mr-1"
+            />
+            <span className="m-4">---</span>
+            <h2 className="text-sm">Support Multiple Languages</h2>
           </div>
         </div>
-
-        <button
-          className="my-4 bg-zinc-800 px-4 py-2 text-sm ml-2"
-          onClick={async () => {
-            await supabase.auth.signOut();
-            await navigate({ to: "/login" });
-          }}
-        >
-          Logout then
-        </button>
       </div>
     );
   }
