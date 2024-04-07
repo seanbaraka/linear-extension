@@ -3,7 +3,8 @@ import { useAuthContext } from "../hooks/userAuth";
 import { FaSortDown } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import TopBarNav from "../components/top-bar";
-import { useGetIssues, IssueState, useLinearUser } from "../hooks/linear";
+import { useLinearUser } from "../hooks/linear";
+import { Issue } from "@linear/sdk";
 
 // Api key authentication
 
@@ -20,7 +21,7 @@ function Index() {
     new Date(Date.now()).toLocaleTimeString(),
   );
   // const [pending, setPending] = useState(false);
-  const [preview, setPreview] = useGetIssues(IssueState.Review);
+  // const [preview, setPreview] = useGetIssues(IssueState.Review);
   // const [inTodo, setInTodo] = useState(false);
   // const [inBacklog, setInBacklog] = useState(false);
 
@@ -39,7 +40,7 @@ function Index() {
 
   // First check if we have an active session
   const { session } = useAuthContext();
-  const allIssues = useGetIssues();
+  // const allIssues = useGetIssues();
 
   // const pendingIssues = useGetIssues(IssueState.InProgress);
   // const inPreviewIssues = useGetIssues(IssueState.Review);
