@@ -1,17 +1,59 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useAuthContext } from "../hooks/userAuth";
-import { FaSortDown, FaSortUp } from "react-icons/fa";
-import { useState } from "react";
+import { FaSortDown } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import TopBarNav from "../components/top-bar";
+import { useLinearUser } from "../hooks/linear";
+import { Issue } from "@linear/sdk";
+
+// Api key authentication
+
 
 function Index() {
   const [inPreview, setInPreview] = useState(false);
   const [inProgress, setInProgress] = useState(false);
   const [toDo, setToDo] = useState(false);
   const [backLog, setBackLog] = useState(false);
-  const [OpenProfile, setOpenProfile] = useState(false);
+  const [myIssues, setMyIssues] = useState<Issue[]>([]);
+
+  const [seconds, setSeconds] = useState(Date.now());
+  const [dayDate, setDayDate] = useState("");
+  const [timeNow, setTimeNow] = useState(
+    new Date(Date.now()).toLocaleTimeString(),
+  );
+  // const [pending, setPending] = useState(false);
+  // const [preview, setPreview] = useGetIssues(IssueState.Review);
+  // const [inTodo, setInTodo] = useState(false);
+  // const [inBacklog, setInBacklog] = useState(false);
+
+  useEffect(() => {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+    setInterval(() => {
+      setSeconds(Date.now());
+      // calculate the day and time
+      const date = new Date(Date.now());
+      const day = days[date.getDay()];
+      const dateString = date.getDate();
+      setDayDate(day + " " + dateString);
+      setTimeNow(date.toLocaleTimeString());
+    }, 1000);
+  }, [seconds, dayDate, timeNow]);
 
   // First check if we have an active session
   const { session } = useAuthContext();
+  // const allIssues = useGetIssues();
+
+  // const pendingIssues = useGetIssues(IssueState.InProgress);
+  // const inPreviewIssues = useGetIssues(IssueState.Review);
+  // const toDoIssues = useGetIssues(IssueState.Todo);
+  // const Backlog = useGetIssues(IssueState.Backlog);
+
+  const me = useLinearUser();
+  if (me) {
+    me.assignedIssues().then((data) => {
+      setMyIssues(data.nodes);
+    });
+  }
 
   // If we don't have a session recorded, prompt the user to login
   if (!session) {
@@ -26,79 +68,32 @@ function Index() {
   } else {
     return (
       <div>
-        <div className="flex flex-row items-start my-4 mx-8">
-          {/* <h1>You are logged in {session.user.email}</h1> */}
-          <div className="bg-blue-400 inline-block p-1 text-sm rounded">SW</div>
-          <h2
-            className="inline-block ml-2"
-            onClick={() => setOpenProfile((prev) => !prev)}
-          >
-            Sweep
-            {OpenProfile ? (
-              <FaSortUp className="inline ml-1" />
-            ) : (
-              <FaSortDown className="inline ml-1 mb-2" />
-            )}
-            {/* dropdown */}
-            <div
-              className={`rounded-lg absolute ${OpenProfile ? "" : "hidden"} bg-zinc-800`}
-            >
-              <div className="mr-24">
-                <div className="m-2">
-                  <label className="text-sm text-gray-400">
-                    Select a workspace
-                  </label>
-                </div>
-                <div className="m-2">
-                  <ul>
-                    <li>
-                      <a href="/yooh/1">
-                        <div className="bg-blue-400 inline-block p-1 text-sm rounded mb-4">
-                          SW
-                        </div>
-                        <h2 className="inline-block ml-2">Sweep</h2>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/yooh/2">
-                        <div className="bg-orange-400 inline-block px-3 py-1 text-sm rounded mb-4">
-                          T
-                        </div>
-                        <h2 className="inline-block ml-2">Tashie</h2>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/yooh/3">
-                        <div className="bg-purple-500 inline-block px-2 py-1 text-sm rounded mb-4">
-                          LA
-                        </div>
-                        <h2 className="inline-block ml-2">Legends Assemble</h2>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </h2>
-
-          <div className="inline-block ml-auto">
-            <div className="w-5 h-5 rounded-full border-2 mt-1 border-gray-400"></div>
-          </div>
-        </div>
-        <div className="border-b-2 border-gray-600 mx-8"></div>
+        <TopBarNav />
         <div className="my-4 mx-8">
           <h2 className="text-gray-400 text-4xl">
-            Mon. 18 <span className="text-lg"> 01:32 PM</span>
+            {dayDate}
+            <span className="text-lg"> {timeNow}</span>
           </h2>
-          <p className="my-4 mx-4 text-2xl text-center mt-6 mb-8">
-            Good Afternoon Ethan, here is what’s planned
-          </p>
+          {me && (
+            <p className="my-4 mx-4 text-2xl text-center mt-6 mb-8">
+              Good Afternoon {me.displayName}, here is what’s planned
+            </p>
+          )}
           <div className="flex justify-center flex-col items-center">
             <button type="submit" className="bg-zinc-800 p-2 rounded-lg m-2">
               My issues
               <FaSortDown className="inline ml-1 mb-2" />
             </button>
-            <h1 className="mt-4 text-6xl">10</h1>
+            {myIssues.length > 0 && (
+              <>
+                <h1 className="mt-4 text-6xl">{myIssues.length}</h1>
+                {/* {myIssues.map((issue) => (
+                  <p key={issue.id}>
+                    {issue.number} {issue.title}
+                  </p>
+                ))} */}
+              </>
+            )}
             <h2 className="text-sm mt-4 text-gray-300">
               3 Urgent 3 High 4 Low
             </h2>
