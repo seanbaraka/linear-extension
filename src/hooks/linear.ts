@@ -2,8 +2,14 @@
 import { LinearClient, Issue, User, Organization } from "@linear/sdk";
 import { useEffect, useState } from "react";
 
+export const clientId = import.meta.env.VITE_LINEAR_CLIENT_ID as string;
+export const clientSecret = import.meta.env.VITE_LINEAR_CLIENT_SECRET as string;
+export const redirectUrl = import.meta.env.PROD
+  ? "https://linear-extension.vercel.app/oauth/callback"
+  : "http://localhost:5173/oauth/callback";
+
 export const client1 = new LinearClient({
-  apiKey: import.meta.env.VITE_LINEAR_API_KEY as string,
+  accessToken: localStorage.getItem("linearToken") || "",
 });
 
 export enum IssueState {
@@ -71,7 +77,6 @@ export const useLinearOrg = () => {
   useEffect(() => {
     if (!isLoading) return;
     client1.organization.then((organization) => {
-      console.log("Organization found,", organization);
       setIsLoading(false);
       setOrganization(organization);
     });
