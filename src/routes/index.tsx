@@ -52,12 +52,6 @@ function Index() {
   // const toDoIssues = useGetIssues(IssueState.Todo);
   // const Backlog = useGetIssues(IssueState.Backlog);
 
-  // if (me) {
-  //   me.assignedIssues().then((data) => {
-  //     setMyIssues(data.nodes);
-  //   });
-  // }
-
   // If we don't have a session recorded, prompt the user to login
   if (!session) {
     return (
@@ -102,11 +96,11 @@ function Index() {
             </h2>
           </div>
         </div>
-        <div className="flex items-center my-8 mx-8">
+        <div className="flex justify-between px-6 items-center">
           <button
             className={`flex items-center ${
               inPreview ? "bg-zinc-800" : ""
-            } text-sm rounded-lg px-1 py-1`}
+            } text-xs gap-2 rounded-lg px-3 py-2.5`}
             onClick={() => {
               setInPreview(true);
               setInProgress(false);
@@ -114,15 +108,25 @@ function Index() {
               setBackLog(false);
             }}
           >
-            <div className="w-4 h-4 rounded-full border-2 border-green-600 overflow-hidden mr-1">
-              <div className="h-full bg-green-600 w-3/4"></div>
-            </div>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 12 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="6" cy="6" r="5.5" stroke="#28A745" />
+              <path
+                d="M2 6C2 6.79112 2.2346 7.56448 2.67412 8.22228C3.11365 8.88008 3.73836 9.39277 4.46927 9.69552C5.20017 9.99827 6.00444 10.0775 6.78036 9.92314C7.55629 9.7688 8.26902 9.38784 8.82843 8.82843C9.38784 8.26902 9.7688 7.55629 9.92314 6.78036C10.0775 6.00444 9.99827 5.20017 9.69552 4.46927C9.39277 3.73836 8.88008 3.11365 8.22228 2.67412C7.56449 2.2346 6.79113 2 6 2L6 6L2 6Z"
+                fill="#28A745"
+              />
+            </svg>
             In Preview
           </button>
           <button
             className={`flex items-center ${
               inProgress ? "bg-zinc-800" : ""
-            } text-sm rounded-lg ml-1 px-1 py-1`}
+            } text-xs rounded-lg ml-1 px-2 py-2.5`}
             onClick={() => {
               setInPreview(false);
               setInProgress(true);
@@ -138,7 +142,7 @@ function Index() {
           <button
             className={`flex items-center ${
               toDo ? "bg-zinc-800" : ""
-            } text-sm rounded-lg ml-1 px-1 py-1`}
+            } text-xs rounded-lg ml-1 px-2 py-2.5`}
             onClick={() => {
               setInPreview(false);
               setInProgress(false);
@@ -147,12 +151,12 @@ function Index() {
             }}
           >
             <div className="w-4 h-4 rounded-full border-2 border-gray-400 overflow-hidden mr-1"></div>
-            To Do
+            Todo
           </button>
           <button
             className={`flex items-center ${
               backLog ? "bg-zinc-800" : ""
-            } text-sm rounded-lg ml-1 px-1 py-1`}
+            } text-xs rounded-lg ml-1 px-2 py-2.5`}
             onClick={() => {
               setInPreview(false);
               setInProgress(false);
