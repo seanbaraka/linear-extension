@@ -1,4 +1,4 @@
-import { Navigate, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { clientId, clientSecret, redirectUrl } from "../../hooks/linear";
 import { useEffect, useState } from "react";
 

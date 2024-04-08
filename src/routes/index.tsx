@@ -1,15 +1,9 @@
-import { Link, Navigate, createFileRoute } from "@tanstack/react-router";
-import { isLoggedIn, useAuthContext } from "../hooks/userAuth";
+import { Navigate, createFileRoute } from "@tanstack/react-router";
+import { isLoggedIn } from "../hooks/userAuth";
 import { FaSortDown } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import TopBarNav from "../components/top-bar";
-import {
-  client1,
-  useGetIssues,
-  useGetUserAssignedIssues,
-  useLinearUser,
-} from "../hooks/linear";
-import { Issue } from "@linear/sdk";
+import { useGetUserAssignedIssues } from "../hooks/linear";
 
 // Api key authentication
 

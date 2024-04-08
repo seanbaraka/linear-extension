@@ -4,7 +4,7 @@ import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 
 export default function TopBarNav() {
   const [openProfile, setOpenProfile] = useState(false);
-  const { organization, isLoading } = useLinearOrg();
+  const { organization } = useLinearOrg();
 
   return (
     <>
