@@ -3,18 +3,23 @@ import { useAuthContext } from "../hooks/userAuth";
 import { FaSortDown } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import TopBarNav from "../components/top-bar";
-import { useLinearUser } from "../hooks/linear";
+import {
+  client1,
+  useGetIssues,
+  useGetUserAssignedIssues,
+  useLinearUser,
+} from "../hooks/linear";
 import { Issue } from "@linear/sdk";
 
 // Api key authentication
-
 
 function Index() {
   const [inPreview, setInPreview] = useState(false);
   const [inProgress, setInProgress] = useState(false);
   const [toDo, setToDo] = useState(false);
   const [backLog, setBackLog] = useState(false);
-  const [myIssues, setMyIssues] = useState<Issue[]>([]);
+
+  const { issues, isLoading } = useGetUserAssignedIssues();
 
   const [seconds, setSeconds] = useState(Date.now());
   const [dayDate, setDayDate] = useState("");
@@ -41,19 +46,17 @@ function Index() {
 
   // First check if we have an active session
   const { session } = useAuthContext();
-  // const allIssues = useGetIssues();
 
   // const pendingIssues = useGetIssues(IssueState.InProgress);
   // const inPreviewIssues = useGetIssues(IssueState.Review);
   // const toDoIssues = useGetIssues(IssueState.Todo);
   // const Backlog = useGetIssues(IssueState.Backlog);
 
-  const me = useLinearUser();
-  if (me) {
-    me.assignedIssues().then((data) => {
-      setMyIssues(data.nodes);
-    });
-  }
+  // if (me) {
+  //   me.assignedIssues().then((data) => {
+  //     setMyIssues(data.nodes);
+  //   });
+  // }
 
   // If we don't have a session recorded, prompt the user to login
   if (!session) {
@@ -74,19 +77,19 @@ function Index() {
             {dayDate}
             <span className="text-lg"> {timeNow}</span>
           </h2>
-          {me && (
+          {/* {me && (
             <p className="my-4 mx-4 text-2xl text-center mt-6 mb-8">
               Good Afternoon {me.displayName}, here is what’s planned
             </p>
-          )}
+          )} */}
           <div className="flex justify-center flex-col items-center">
             <button type="submit" className="bg-zinc-800 p-2 rounded-lg m-2">
               My issues
               <FaSortDown className="inline ml-1 mb-2" />
             </button>
-            {myIssues.length > 0 && (
+            {!isLoading && (
               <>
-                <h1 className="mt-4 text-6xl">{myIssues.length}</h1>
+                <h1 className="mt-4 text-6xl">{issues.length}</h1>
                 {/* {myIssues.map((issue) => (
                   <p key={issue.id}>
                     {issue.number} {issue.title}
