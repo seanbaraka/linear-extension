@@ -8,3 +8,7 @@ export function useAuthContext() {
   }
   return context;
 }
+
+export function isLoggedIn() {
+  return localStorage.getItem("linearToken") !== null;
+}
