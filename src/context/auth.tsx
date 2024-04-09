@@ -1,56 +1,36 @@
-import { Session } from "@supabase/supabase-js";
 import { ReactNode } from "@tanstack/react-router";
 import React, { createContext, useEffect, useMemo, useState } from "react";
-import { supabase } from "../utils";
+import { LinearClient } from "@linear/sdk";
 
 interface AuthUser {
   user: string;
   setUser: React.Dispatch<React.SetStateAction<string>>;
-  session: Session | undefined;
+  linearClient: LinearClient | null;
 }
 
 export const AuthContext = createContext<AuthUser | null>(null);
 
 export function AuthContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState("");
-  const [session, setSession] = useState<Session>();
+  const [linearClient, setLinearClient] = useState<LinearClient | null>(null);
 
   useEffect(() => {
-    supabase.auth
-      .getSession()
-      .then(({ data: { session } }) => {
-        if (session) {
-          setUser(session.user.id);
-          setSession(session);
-        }
-      })
-      .catch((er: any) => {
-        console.log("An error occured", er.message);
-      });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") {
-        setSession(undefined);
-      } else {
-        if (session) {
-          setUser(session.user.id);
-          setSession(session);
-        }
-      }
+    if (linearClient) return;
+    const token = localStorage.getItem("linearToken");
+    if (!token) return;
+    const client = new LinearClient({
+      accessToken: token,
     });
-
-    return () => subscription.unsubscribe();
-  }, []);
+    setLinearClient(client);
+  }, [linearClient]);
 
   const value = useMemo(
     () => ({
       user,
       setUser,
-      session,
+      linearClient,
     }),
-    [user, setUser, session],
+    [user, setUser, linearClient],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
