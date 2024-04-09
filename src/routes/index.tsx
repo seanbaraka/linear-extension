@@ -1,4 +1,4 @@
-import { Navigate, createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { isLoggedIn } from "../hooks/userAuth";
 import { FaSortDown } from "react-icons/fa";
 import { useState, useEffect } from "react";
@@ -12,6 +12,12 @@ function Index() {
   const [inProgress, setInProgress] = useState(false);
   const [toDo, setToDo] = useState(false);
   const [backLog, setBackLog] = useState(false);
+  const navigate = useNavigate();
+  const user = isLoggedIn();
+
+  if (!user) {
+    navigate({ to: "/login" });
+  }
 
   const { issues, isLoading } = useGetUserAssignedIssues();
 
@@ -40,10 +46,6 @@ function Index() {
 
   // First check if we have an active session
 
-  const user = isLoggedIn();
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
   // const pendingIssues = useGetIssues(IssueState.InProgress);
   // const inPreviewIssues = useGetIssues(IssueState.Review);
   // const toDoIssues = useGetIssues(IssueState.Todo);
