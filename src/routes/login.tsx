@@ -1,14 +1,14 @@
 import { Auth } from "@supabase/auth-ui-react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Navigate } from "@tanstack/react-router";
-import { useAuthContext } from "../hooks/userAuth";
+import { isLoggedIn } from "../hooks/userAuth";
 import { supabase } from "../utils";
 import { clientId, redirectUrl } from "../hooks/linear";
 
 function Login() {
-  const { session } = useAuthContext();
+  const userIsLoggedIn = isLoggedIn();
 
-  if (!session) {
+  if (!userIsLoggedIn) {
     return (
       <section className="m-auto flex min-h-screen w-full max-w-screen-md items-center justify-center px-8 py-4">
         <div className="flex flex-col">
